@@ -1,0 +1,36 @@
+{
+  "filePath": "TurnosHospital\\app.py",
+  "lines": [
+    {
+      "line": 0,
+      "author": "mixed",
+      "confidence": 0.8999999999999999,
+      "aiEdits": 1,
+      "humanEdits": 1,
+      "lastEditType": "human",
+      "lastEditTimestamp": 1794317731730,
+      "signals": {
+        "typingRhythm": 0.5,
+        "editSize": 0.95,
+        "cursorMovement": 0.5,
+        "editSequence": 0.5,
+        "undoFrequency": 0.5,
+        "extensionSource": 0.5,
+        "velocityProfile": 0.5,
+        "selectionPattern": 0.5,
+        "pastePattern": 0.5,
+        "deletionPattern": 0.5,
+        "pausePattern": 0.5
+      }
+    }
+  ],
+  "summary": {
+    "totalLines": 1,
+    "aiLines": 0,
+    "humanLines": 0,
+    "mixedLines": 1,
+    "aiPercentage": 0,
+    "humanPercentage": 0
+  },
+  "lastUpdated": 1794317745184
+}
