@@ -1,7 +1,7 @@
 import web
 
 urls = (
-    '/', 'Index',
+    '/', 'controllers.index.Index',
 
 )
 
