@@ -1,0 +1,36 @@
+{
+  "filePath": "navegador_web\\views\\index.html",
+  "lines": [
+    {
+      "line": 0,
+      "author": "human",
+      "confidence": 0.16533333333333333,
+      "aiEdits": 0,
+      "humanEdits": 9,
+      "lastEditType": "human",
+      "lastEditTimestamp": 1794421633962,
+      "signals": {
+        "typingRhythm": 0.3,
+        "editSize": 0.5,
+        "cursorMovement": 0.3,
+        "editSequence": 0.71,
+        "undoFrequency": 0.5,
+        "extensionSource": 0.5,
+        "velocityProfile": 0.5,
+        "selectionPattern": 0.7,
+        "pastePattern": 0.5,
+        "deletionPattern": 0.5,
+        "pausePattern": 0.5
+      }
+    }
+  ],
+  "summary": {
+    "totalLines": 1,
+    "aiLines": 0,
+    "humanLines": 1,
+    "mixedLines": 0,
+    "aiPercentage": 0,
+    "humanPercentage": 100
+  },
+  "lastUpdated": 1794421638519
+}
