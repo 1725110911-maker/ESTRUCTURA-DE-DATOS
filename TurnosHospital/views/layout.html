@@ -1,13 +1,22 @@
 $def with (content)
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Gestión de Turnos | Hospital</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-    $:content
+    <header class="navbar">
+        <div class="container navbar-content">
+            <h1>🏥 Sistema de Turnos Hospitalarios</h1>
+            <span class="badge-fifo">Colas FIFO + Prioridad Médica</span>
+        </div>
+    </header>
+
+    <main class="container">
+        $:content
+    </main>
 </body>
 </html>

@@ -1,2 +1,164 @@
-<h1>Turnos de hospital</h1>
+$def with (datos, mensaje, tipo_mensaje)
 
+$if mensaje:
+    <div class="alerta alerta-$tipo_mensaje">
+        $mensaje
+    </div>
+
+<div class="grid-superior">
+    <!-- FORMULARIO DE REGISTRO -->
+    <section class="card">
+        <h2>📝 Registrar Paciente</h2>
+        <form method="POST" action="/">
+            <input type="hidden" name="accion" value="registrar">
+
+            <div class="form-group">
+                <label for="nombre">Nombre del paciente</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Ej. María González" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edad">Edad</label>
+                    <input type="number" id="edad" name="edad" min="0" max="120" placeholder="Ej. 45" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tiempo_estimado">Tiempo estimado (min)</label>
+                    <input type="number" id="tiempo_estimado" name="tiempo_estimado" min="1" value="15" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="motivo">Motivo de consulta</label>
+                <input type="text" id="motivo" name="motivo" placeholder="Ej. Dolor agudo / Revisión general" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo_atencion">Clasificación de Urgencia</label>
+                <select id="tipo_atencion" name="tipo_atencion">
+                    <option value="2">2 - Atención General (Orden de llegada)</option>
+                    <option value="1">1 - Atención Prioritaria (Urgencia, embarazo, adulto mayor)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Asignar Turno</button>
+        </form>
+    </section>
+
+    <!-- CONTROL DE CONSULTA Y ESTADÍSTICAS -->
+    <section class="card">
+        <h2>🩺 Control Médico y Estadísticas</h2>
+
+        <form method="POST" action="/" class="form-atender">
+            <input type="hidden" name="accion" value="atender">
+            <button type="submit" class="btn btn-success">Atender Siguiente Paciente</button>
+        </form>
+
+        $if datos['ultimo_atendido']:
+            <div class="consulta-actual">
+                <span class="tag-consulta">Último / En Consulta</span>
+                <h3>Turno #$datos['ultimo_atendido']['turno'] — $datos['ultimo_atendido']['nombre']</h3>
+                <p><strong>Edad:</strong> $datos['ultimo_atendido']['edad'] años | <strong>Tipo:</strong> $datos['ultimo_atendido']['tipo_str']</p>
+                <p><strong>Motivo:</strong> $datos['ultimo_atendido']['motivo']</p>
+                <p><strong>Duración est.:</strong> $datos['ultimo_atendido']['tiempo_estimado'] min | <strong>Esperó:</strong> $datos['ultimo_atendido']['tiempo_espera'] min</p>
+            </div>
+        $else:
+            <div class="consulta-vacia">
+                <p>Consultorio disponible. Presiona "Atender Siguiente Paciente" para llamar al próximo turno.</p>
+            </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-num">$datos['total_atendidos']</span>
+                <span class="stat-label">Total Atendidos</span>
+            </div>
+            <div class="stat-box stat-prio">
+                <span class="stat-num">$datos['atendidos_prioritarios']</span>
+                <span class="stat-label">Prioritarios</span>
+            </div>
+            <div class="stat-box stat-gen">
+                <span class="stat-num">$datos['atendidos_generales']</span>
+                <span class="stat-label">Generales</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">$datos['promedio_consulta'] min</span>
+                <span class="stat-label">Promedio Consulta</span>
+            </div>
+        </div>
+        <p class="tiempo-acumulado">Tiempo total acumulado en consultas: <strong>$datos['tiempo_total_consulta'] minutos</strong></p>
+    </section>
+</div>
+
+<!-- SALAS DE ESPERA (COLAS FIFO) -->
+<div class="grid-filas">
+    <!-- FILA PRIORITARIA -->
+    <section class="card border-prioritaria">
+        <div class="fila-header">
+            <h2>🔴 Fila Prioritaria</h2>
+            <span class="contador badge-red">$len(datos['fila_prioritaria']) en espera</span>
+        </div>
+
+        $if not datos['fila_prioritaria']:
+            <p class="texto-vacio">No hay pacientes en la fila prioritaria.</p>
+        $else:
+            <div class="tabla-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Turno</th>
+                            <th>Paciente</th>
+                            <th>Motivo</th>
+                            <th>Est.</th>
+                            <th>Espera</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        $for p in datos['fila_prioritaria']:
+                            <tr>
+                                <td><strong>#$p['turno']</strong></td>
+                                <td>$p['nombre'] ($p['edad'] a)</td>
+                                <td>$p['motivo']</td>
+                                <td>$p['tiempo_estimado']m</td>
+                                <td>$p['espera']m</td>
+                            </tr>
+                    </tbody>
+                </table>
+            </div>
+    </section>
+
+    <!-- FILA GENERAL -->
+    <section class="card border-general">
+        <div class="fila-header">
+            <h2>🔵 Fila General</h2>
+            <span class="contador badge-blue">$len(datos['fila_general']) en espera</span>
+        </div>
+
+        $if not datos['fila_general']:
+            <p class="texto-vacio">No hay pacientes en la fila general.</p>
+        $else:
+            <div class="tabla-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Turno</th>
+                            <th>Paciente</th>
+                            <th>Motivo</th>
+                            <th>Est.</th>
+                            <th>Espera</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        $for p in datos['fila_general']:
+                            <tr>
+                                <td><strong>#$p['turno']</strong></td>
+                                <td>$p['nombre'] ($p['edad'] a)</td>
+                                <td>$p['motivo']</td>
+                                <td>$p['tiempo_estimado']m</td>
+                                <td>$p['espera']m</td>
+                            </tr>
+                    </tbody>
+                </table>
+            </div>
+    </section>
+</div>
