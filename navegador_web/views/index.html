@@ -1,1 +1,104 @@
-<h1>Navegador Web</h1>
+$def with (datos, mensaje, tipo_mensaje)
+
+$if mensaje:
+    <div class="alerta alerta-$tipo_mensaje">
+        $mensaje
+    </div>
+
+<div class="grid-superior">
+    <!-- BARRA DE NAVEGACION Y CONTROLES -->
+    <section class="card">
+        <h2>Barra de Navegacion</h2>
+
+        <form method="POST" action="/" class="form-visitar">
+            <input type="hidden" name="accion" value="visitar">
+            <div class="form-group">
+                <label for="url">Direccion web (URL)</label>
+                <input type="text" id="url" name="url" placeholder="Ej. https://www.google.com" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Visitar Pagina (Push)</button>
+        </form>
+
+        <div class="acciones-pila">
+            <form method="POST" action="/">
+                <input type="hidden" name="accion" value="regresar">
+                <button type="submit" class="btn btn-secondary">Regresar (Pop)</button>
+            </form>
+
+            <form method="POST" action="/">
+                <input type="hidden" name="accion" value="verificar">
+                <button type="submit" class="btn btn-info">Verificar Vacio</button>
+            </form>
+
+            <form method="POST" action="/">
+                <input type="hidden" name="accion" value="eliminar">
+                <button type="submit" class="btn btn-danger">Eliminar Historial</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- PANTALLA / PAGINA ACTUAL -->
+    <section class="card">
+        <h2>Vista Actual del Navegador</h2>
+
+        $if datos['pagina_actual']:
+            <div class="pantalla-activa">
+                <span class="tag-tope">Tope de la Pila (Peek)</span>
+                <p class="url-actual">$datos['pagina_actual']</p>
+            </div>
+        $else:
+            <div class="pantalla-vacia">
+                <p>No estas navegando en ninguna pagina (Historial vacio).</p>
+            </div>
+
+        <div class="estado-grid">
+            <div class="stat-box">
+                <span class="stat-num">$datos['total']</span>
+                <span class="stat-label">Paginas en la pila</span>
+            </div>
+            <div class="stat-box">
+                $if datos['esta_vacio']:
+                    <span class="stat-num">Si</span>
+                $else:
+                    <span class="stat-num">No</span>
+                <span class="stat-label">Historial vacio</span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- HISTORIAL DE NAVEGACION (ORDEN LIFO) -->
+<section class="card border-pila">
+    <div class="fila-header">
+        <h2>Historial de Paginas Visitadas (Desde la actual)</h2>
+        <span class="contador">$datos['total'] registro(s)</span>
+    </div>
+
+    $if datos['esta_vacio']:
+        <p class="texto-vacio">El historial esta vacio. Ingresa una URL arriba para comenzar a apilar paginas.</p>
+    $else:
+        <table>
+            <thead>
+                <tr>
+                    <th>Orden LIFO</th>
+                    <th>Direccion Web (URL)</th>
+                    <th>Posicion en Pila</th>
+                </tr>
+            </thead>
+            <tbody>
+                $for item in datos['historial']:
+                    $if item['es_actual']:
+                        <tr class="fila-destacada">
+                            <td><strong>#$item['posicion']</strong></td>
+                            <td>$item['url']</td>
+                            <td><span class="badge-actual">Pagina Actual (Tope)</span></td>
+                        </tr>
+                    $else:
+                        <tr>
+                            <td><strong>#$item['posicion']</strong></td>
+                            <td>$item['url']</td>
+                            <td><span class="badge-anterior">Visitada anteriormente</span></td>
+                        </tr>
+            </tbody>
+        </table>
+</section>

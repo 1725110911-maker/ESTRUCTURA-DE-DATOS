@@ -1,14 +1,22 @@
 $def with (content)
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <title>Simulador de Navegador Web | Pila LIFO</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-    $:content
+    <header class="navbar">
+        <div class="container navbar-content">
+            <h1>🌐 Simulador de Navegador Web</h1>
+            <span class="badge-lifo">Estructura Pila (LIFO)</span>
+        </div>
+    </header>
+
+    <main class="container">
+        $:content
+    </main>
 </body>
 </html>
