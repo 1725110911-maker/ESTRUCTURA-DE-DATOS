@@ -3,7 +3,7 @@ from models.models_navegador import HistorialNavegador
 
 render = web.template.render('views/', base='layout')
 
-# Instancia en memoria para mantener la pila activa durante la sesión
+# Instancia
 navegador = HistorialNavegador()
 
 

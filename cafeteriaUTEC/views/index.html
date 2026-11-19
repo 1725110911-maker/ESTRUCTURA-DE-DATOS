@@ -1,1 +1,209 @@
-<h1> cafeteria utec </h1>
+$def with (datos, mensaje, tipo_mensaje)
+
+$if mensaje:
+    <div class="alerta alerta-$tipo_mensaje">
+        $mensaje
+    </div>
+
+<div class="grid-superior">
+    <!-- 1. REGISTRAR PEDIDO -->
+    <section class="card">
+        <h2>Registrar Nuevo Pedido</h2>
+        <form method="POST" action="/">
+            <input type="hidden" name="accion" value="registrar">
+
+            <div class="form-group">
+                <label for="nombre_cliente">Nombre del cliente</label>
+                <input type="text" id="nombre_cliente" name="nombre_cliente" placeholder="Ej. Carlos Ramirez" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="producto">Producto (Alimento o bebida)</label>
+                    <input type="text" id="producto" name="producto" placeholder="Ej. Chilaquiles / Cafe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cantidad">Cantidad</label>
+                    <input type="number" id="cantidad" name="cantidad" min="1" value="1" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tipo_pedido">Tipo de pedido</label>
+                    <select id="tipo_pedido" name="tipo_pedido">
+                        <option value="2">2 - Normal (Orden de llegada)</option>
+                        <option value="1">1 - Prioritario (Clases proximas)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tiempo_preparacion">Tiempo preparacion (min)</label>
+                    <input type="number" id="tiempo_preparacion" name="tiempo_preparacion" min="1" value="8" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registrar Pedido</button>
+        </form>
+    </section>
+
+    <!-- 2, 3, 5 y 6. CONTROL DE PREPARACION, CONSULTA, CANCELACION Y ESTADISTICAS -->
+    <section class="card">
+        <h2>Control de Cocina y Estadisticas</h2>
+
+        <div class="acciones-cocina">
+            <form method="POST" action="/">
+                <input type="hidden" name="accion" value="preparar">
+                <button type="submit" class="btn btn-success">Preparar Siguiente Pedido</button>
+            </form>
+
+            <form method="POST" action="/">
+                <input type="hidden" name="accion" value="consultar_siguiente">
+                <button type="submit" class="btn btn-info">Consultar Siguiente</button>
+            </form>
+        </div>
+
+        <!-- 3. PROXIMO PEDIDO EN TURNO (PEEK) -->
+        $if datos['siguiente_pedido']:
+            <div class="caja-siguiente">
+                <span class="tag-siguiente">Siguiente Pedido a Preparar</span>
+                <p>
+                    <strong>Pedido #$datos['siguiente_pedido']['numero_pedido']</strong> -
+                    $datos['siguiente_pedido']['cantidad']x $datos['siguiente_pedido']['producto']
+                    ($datos['siguiente_pedido']['nombre_cliente'])
+                </p>
+                <small>
+                    Tipo: <strong>$datos['siguiente_pedido']['tipo_str']</strong> |
+                    Tiempo est.: <strong>$datos['siguiente_pedido']['tiempo_preparacion'] min</strong>
+                </small>
+            </div>
+        $else:
+            <div class="caja-vacia">
+                <p>No hay pedidos en espera para preparar.</p>
+            </div>
+
+        <!-- ULTIMO PREPARADO -->
+        $if datos['ultimo_preparado']:
+            <div class="caja-preparado">
+                <span class="tag-preparado">Ultimo Pedido Despachado</span>
+                <p>
+                    <strong>Pedido #$datos['ultimo_preparado']['numero_pedido']</strong>:
+                    $datos['ultimo_preparado']['cantidad']x $datos['ultimo_preparado']['producto']
+                    para $datos['ultimo_preparado']['nombre_cliente'] ($datos['ultimo_preparado']['tipo_str'])
+                </p>
+            </div>
+
+        <!-- 6. CANCELAR PEDIDO POR NUMERO -->
+        <form method="POST" action="/" class="form-cancelar">
+            <input type="hidden" name="accion" value="cancelar">
+            <input type="number" name="numero_pedido" min="1" placeholder="No. de pedido a cancelar" required>
+            <button type="submit" class="btn btn-danger btn-inline">Cancelar Pedido</button>
+        </form>
+
+        <!-- 5. ESTADISTICAS -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-num">$datos['total_preparados']</span>
+                <span class="stat-label">Preparados Total</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">$datos['preparados_prioritarios'] / $datos['preparados_normales']</span>
+                <span class="stat-label">Prioritarios / Normales</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">$datos['promedio_preparacion'] min</span>
+                <span class="stat-label">Promedio Prep.</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">$datos['total_cancelados']</span>
+                <span class="stat-label">Cancelados</span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- 4. MOSTRAR PEDIDOS PENDIENTES -->
+<div class="grid-filas">
+    <!-- FILA PRIORITARIA -->
+    <section class="card border-prioritaria">
+        <div class="fila-header">
+            <h2>Fila Prioritaria (Clases Proximas)</h2>
+            <span class="contador badge-red">$len(datos['fila_prioritarios']) pendiente(s)</span>
+        </div>
+
+        $if not datos['fila_prioritarios']:
+            <p class="texto-vacio">No hay pedidos prioritarios pendientes.</p>
+        $else:
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Cant.</th>
+                        <th>Prep.</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    $for p in datos['fila_prioritarios']:
+                        <tr>
+                            <td><strong>#$p['numero_pedido']</strong></td>
+                            <td>$p['nombre_cliente']</td>
+                            <td>$p['producto']</td>
+                            <td>$p['cantidad']</td>
+                            <td>$p['tiempo_preparacion'] min</td>
+                            <td>
+                                <form method="POST" action="/">
+                                    <input type="hidden" name="accion" value="cancelar">
+                                    <input type="hidden" name="numero_pedido" value="$p['numero_pedido']">
+                                    <button type="submit" class="btn-mini-cancel">Cancelar</button>
+                                </form>
+                            </td>
+                        </tr>
+                </tbody>
+            </table>
+    </section>
+
+    <!-- FILA NORMAL -->
+    <section class="card border-normal">
+        <div class="fila-header">
+            <h2>Fila Normal (Orden de Llegada)</h2>
+            <span class="contador badge-blue">$len(datos['fila_normales']) pendiente(s)</span>
+        </div>
+
+        $if not datos['fila_normales']:
+            <p class="texto-vacio">No hay pedidos normales pendientes.</p>
+        $else:
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Cant.</th>
+                        <th>Prep.</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    $for p in datos['fila_normales']:
+                        <tr>
+                            <td><strong>#$p['numero_pedido']</strong></td>
+                            <td>$p['nombre_cliente']</td>
+                            <td>$p['producto']</td>
+                            <td>$p['cantidad']</td>
+                            <td>$p['tiempo_preparacion'] min</td>
+                            <td>
+                                <form method="POST" action="/">
+                                    <input type="hidden" name="accion" value="cancelar">
+                                    <input type="hidden" name="numero_pedido" value="$p['numero_pedido']">
+                                    <button type="submit" class="btn-mini-cancel">Cancelar</button>
+                                </form>
+                            </td>
+                        </tr>
+                </tbody>
+            </table>
+    </section>
+</div>
