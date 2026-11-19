@@ -1,0 +1,157 @@
+$def with (datos, mensaje, tipo_mensaje)
+
+$if mensaje:
+    <div class="alerta alerta-$tipo_mensaje">
+        $mensaje
+    </div>
+
+<div class="grid-superior">
+    <!-- REGISTRO DE LLEGADA -->
+    <section class="card">
+        <h2>Registro de Estudiante</h2>
+        <form method="POST" action="/">
+            <input type="hidden" name="accion" value="registrar">
+
+            <div class="form-group">
+                <label for="matricula">Matricula</label>
+                <input type="text" id="matricula" name="matricula" placeholder="Ej. 20250148" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nombre">Nombre completo del estudiante</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Ej. Ana Laura Mendoza" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tramite">Tramite a realizar</label>
+                <select id="tramite" name="tramite">
+                    <option value="Constancia de estudios">Constancia de estudios</option>
+                    <option value="Inscripcion / Reinscripcion">Inscripcion / Reinscripcion</option>
+                    <option value="Historial academico / Kardex">Historial academico / Kardex</option>
+                    <option value="Tramite de beca">Tramite de beca</option>
+                    <option value="Credencial escolar">Credencial escolar</option>
+                    <option value="Otro tramite">Otro tramite</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Tomar Turno (Entrar a Fila)</button>
+        </form>
+    </section>
+
+    <!-- CONTROL DE VENTANILLA Y ESTADISTICAS -->
+    <section class="card">
+        <h2>Atencion en Ventanilla</h2>
+
+        <div class="acciones-ventanilla">
+            <form method="POST" action="/">
+                <input type="hidden" name="accion" value="atender">
+                <button type="submit" class="btn btn-success">Atender Siguiente (FIFO)</button>
+            </form>
+
+            <form method="POST" action="/">
+                <input type="hidden" name="accion" value="consultar">
+                <button type="submit" class="btn btn-info">Consultar Siguiente</button>
+            </form>
+        </div>
+
+        $if datos['en_ventanilla']:
+            <div class="caja-activa">
+                <span class="tag-activa">En Ventanilla Actualmente</span>
+                <h3>Turno #$datos['en_ventanilla']['turno'] - $datos['en_ventanilla']['nombre']</h3>
+                <p><strong>Matricula:</strong> $datos['en_ventanilla']['matricula'] | <strong>Tramite:</strong> $datos['en_ventanilla']['tramite']</p>
+                <small>Hora llegada: $datos['en_ventanilla']['hora_llegada'] | Tiempo en fila: $datos['en_ventanilla']['tiempo_espera'] min</small>
+            </div>
+        $else:
+            <div class="caja-vacia">
+                <p>Ventanilla libre. Presiona "Atender Siguiente" para llamar al primer estudiante de la fila.</p>
+            </div>
+
+        <form method="POST" action="/" class="form-cancelar">
+            <input type="hidden" name="accion" value="cancelar">
+            <input type="number" name="numero_turno" min="1" placeholder="No. de turno a cancelar" required>
+            <button type="submit" class="btn btn-danger btn-inline">Cancelar Turno</button>
+        </form>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-num">$datos['total_pendientes']</span>
+                <span class="stat-label">En Fila</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">$datos['total_atendidos']</span>
+                <span class="stat-label">Atendidos</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">$datos['promedio_espera'] min</span>
+                <span class="stat-label">Espera Promedio</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">$datos['total_cancelados']</span>
+                <span class="stat-label">Cancelados</span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- FILA DE ESPERA (ORDEN FIFO) -->
+<section class="card border-fila">
+    <div class="fila-header">
+        <h2>Fila de Espera (Orden de Llegada - FIFO)</h2>
+        <span class="contador">$datos['total_pendientes'] estudiante(s) en espera</span>
+    </div>
+
+    $if not datos['fila']:
+        <p class="texto-vacio">No hay estudiantes esperando en la fila.</p>
+    $else:
+        <table>
+            <thead>
+                <tr>
+                    <th>Orden</th>
+                    <th>Turno</th>
+                    <th>Matricula</th>
+                    <th>Estudiante</th>
+                    <th>Tramite</th>
+                    <th>Llegada</th>
+                    <th>Espera</th>
+                    <th>Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+                $for est in datos['fila']:
+                    $if est['posicion'] == 1:
+                        <tr class="fila-siguiente">
+                            <td><span class="badge-next">1ro (Siguiente)</span></td>
+                            <td><strong>#$est['turno']</strong></td>
+                            <td>$est['matricula']</td>
+                            <td>$est['nombre']</td>
+                            <td>$est['tramite']</td>
+                            <td>$est['hora_llegada']</td>
+                            <td>$est['espera_actual'] min</td>
+                            <td>
+                                <form method="POST" action="/">
+                                    <input type="hidden" name="accion" value="cancelar">
+                                    <input type="hidden" name="numero_turno" value="$est['turno']">
+                                    <button type="submit" class="btn-mini-cancel">Retirar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    $else:
+                        <tr>
+                            <td>$est['posicion']</td>
+                            <td><strong>#$est['turno']</strong></td>
+                            <td>$est['matricula']</td>
+                            <td>$est['nombre']</td>
+                            <td>$est['tramite']</td>
+                            <td>$est['hora_llegada']</td>
+                            <td>$est['espera_actual'] min</td>
+                            <td>
+                                <form method="POST" action="/">
+                                    <input type="hidden" name="accion" value="cancelar">
+                                    <input type="hidden" name="numero_turno" value="$est['turno']">
+                                    <button type="submit" class="btn-mini-cancel">Retirar</button>
+                                </form>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>

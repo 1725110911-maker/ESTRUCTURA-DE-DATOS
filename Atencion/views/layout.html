@@ -1,0 +1,22 @@
+$def with (content)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios Escolares | Control de Turnos</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container navbar-content">
+            <h1>Ventanilla de Servicios Escolares</h1>
+            <span class="badge-fifo">Estructura Fila (FIFO)</span>
+        </div>
+    </header>
+
+    <main class="container">
+        $:content
+    </main>
+</body>
+</html>

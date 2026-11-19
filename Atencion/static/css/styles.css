@@ -1,0 +1,270 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f6f9;
+    color: #333;
+    margin: 0;
+    padding-bottom: 30px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Encabezado */
+.navbar {
+    background-color: #1e3a8a;
+    color: white;
+    padding: 15px 0;
+    margin-bottom: 20px;
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar h1 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.badge-fifo {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+/* Alertas */
+.alerta {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.alerta-success { background: #d1e7dd; color: #0f5132; }
+.alerta-warning { background: #fff3cd; color: #664d03; }
+.alerta-error   { background: #f8d7da; color: #842029; }
+.alerta-info    { background: #cff4fc; color: #055160; }
+
+/* Estructura en columnas */
+.grid-superior {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+/* Formularios */
+.form-group {
+    margin-bottom: 12px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Botones */
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-primary { background-color: #1e3a8a; }
+.btn-success { background-color: #15803d; }
+.btn-info    { background-color: #0284c7; }
+.btn-danger  { background-color: #dc3545; }
+
+.acciones-ventanilla {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.form-cancelar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.form-cancelar input {
+    flex: 2;
+}
+
+.btn-inline {
+    flex: 1;
+    padding: 8px;
+}
+
+/* Ventanilla activa */
+.caja-activa, .caja-vacia {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.caja-activa {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.caja-activa h3 {
+    margin: 6px 0;
+    font-size: 16px;
+}
+
+.caja-activa p {
+    margin: 4px 0;
+}
+
+.tag-activa {
+    background: #15803d;
+    color: white;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Estadisticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.stat-box {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    border-radius: 6px;
+}
+
+.stat-num {
+    display: block;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #666;
+}
+
+/* Tabla FIFO */
+.border-fila {
+    border-top: 4px solid #1e3a8a;
+}
+
+.fila-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.fila-header h2 {
+    margin: 0;
+}
+
+.contador {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th, td {
+    padding: 8px 6px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.fila-siguiente {
+    background-color: #eff6ff;
+}
+
+.badge-next {
+    background: #1d4ed8;
+    color: white;
+    padding: 3px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.btn-mini-cancel {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.texto-vacio {
+    text-align: center;
+    color: #666;
+    padding: 15px 0;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .grid-superior, .acciones-ventanilla {
+        grid-template-columns: 1fr;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
